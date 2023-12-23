@@ -1,0 +1,7 @@
+**/.env
+**/node_modules/
+**/solutions/
+**/solution/
+**/tests/
+**/package.json
+**/package-lock.json
