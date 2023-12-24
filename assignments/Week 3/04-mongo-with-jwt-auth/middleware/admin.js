@@ -1,7 +1,22 @@
+require("dotenv").config();
+const jwt = require("jsonwebtoken");
+const { Admin } = require("../db/index");
+
 // Middleware for handling auth
-function adminMiddleware(req, res, next) {
-    // Implement admin auth logic
-    // You need to check the headers and validate the admin from the admin DB. Check readme for the exact headers to be expected
+async function adminMiddleware(req, res, next) {
+  const validationHeader = req.headers.authorization;
+  const token = validationHeader.split(" ")[1];
+
+  try {
+    const verify = jwt.verify(token, process.env.JWT_KEY);
+    console.log(verify);
+    const { username } = verify;
+    const foundAdmin = await Admin.findOne({ username });
+    if (!foundAdmin) return res.json({ msg: "Not an admin" });
+    next();
+  } catch (error) {
+    throw new Error("Invalid token");
+  }
 }
 
 module.exports = adminMiddleware;
