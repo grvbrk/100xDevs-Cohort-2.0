@@ -6,3 +6,5 @@
 **/test/
 **/package.json
 **/package-lock.json
+**/.eslintrc.cjs
+**/vite.config.js
