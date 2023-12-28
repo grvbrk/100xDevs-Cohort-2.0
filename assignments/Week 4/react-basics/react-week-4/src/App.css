@@ -2,10 +2,15 @@
   padding: 0;
   margin: 0;
   box-sizing: border-box;
+  color: white;
+  font-family: "Roboto", serif;
+}
+body {
+  background-color: rgb(26, 25, 25);
 }
 
 .todo-container {
-  /* height: 200px; */
+  height: 200px;
   margin-top: 20px;
   display: flex;
   flex-direction: column;
@@ -16,37 +21,63 @@
 
 input {
   padding: 10px 15px;
+  color: black;
+  border-radius: 5px;
+  border: none;
 }
 .add-clear-todo-btn {
   display: flex;
   gap: 10px;
 }
 
-.add-clear-todo-btn > * {
+.add-clear-todo-btn > button {
+  color: black;
   padding: 3px 10px;
+}
+
+.render-todo {
+  display: flex;
+  justify-content: space-evenly;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
 .todo-entry {
-  /* border: 1px solid red; */
-  padding: 10px;
-  display: flex;
-  gap: 20px;
-}
+  border-radius: 10px;
+  border: 0.2px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 8px 8px 10px 0px rgba(255, 255, 255, 0.12);
 
-.todo-entry > :nth-child(1) {
+  background-color: rgb(26, 25, 25);
+  width: 350px;
+
+  padding: 5px 10px 15px;
   display: flex;
   flex-direction: column;
-  align-self: center;
   gap: 10px;
 }
 
-.todo-entry > :nth-child(2) {
-  margin-bottom: 5px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+.todo-entry-info {
+  word-wrap: break-word;
+  font-family: "Playfair Display", serif;
 }
 
-.todo-entry > :nth-child(1) > button {
-  padding: 3px 10px;
+.todo-entry-info > h1 {
+  padding-bottom: 5px;
+}
+
+.todo-entry-info > p {
+  padding-bottom: 10px;
+}
+
+.todo-edit-completed-btn-container {
+  display: flex;
+  gap: 10px;
+}
+
+.general-button {
+  padding: 4px 8px;
+  border-radius: 5px;
+  border: none;
+  color: black;
+  background-color: rgb(230, 201, 163);
 }

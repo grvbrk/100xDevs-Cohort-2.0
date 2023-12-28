@@ -8,20 +8,40 @@ function App() {
   const [isEditing, setIsEditing] = useState(false);
 
   function handleSubmit(e) {
-    const title = document.getElementById("todo-title").value;
-    const desc = document.getElementById("todo-desc").value;
-    const newTodo = { id: uuidv4(), title, desc, completed: false };
+    if (!isEditing) {
+      const title = document.getElementById("todo-title").value;
+      const desc = document.getElementById("todo-desc").value;
+      const newTodo = { id: uuidv4(), title, desc, completed: false };
 
-    setTodos((prev) => {
-      return [...prev, newTodo];
-    });
+      setTodos((prev) => {
+        return [...prev, newTodo];
+      });
 
-    document.getElementById("todo-title").value = "";
-    document.getElementById("todo-desc").value = "";
+      document.getElementById("todo-title").value = "";
+      document.getElementById("todo-desc").value = "";
+    } else {
+      const todoId = localStorage.getItem("todoId");
+      setIsEditing(!isEditing);
+      const newTitle = document.getElementById("todo-title").value;
+      const newDesc = document.getElementById("todo-desc").value;
+      setTodos((prev) => {
+        return prev.map((item) => {
+          return item.id === todoId
+            ? { ...item, title: newTitle, desc: newDesc }
+            : item;
+        });
+      });
+
+      document.getElementById("todo-title").value = "";
+      document.getElementById("todo-desc").value = "";
+    }
   }
 
   function handleClear() {
     setTodos([]);
+    setIsEditing(false);
+    document.getElementById("todo-title").value = "";
+    document.getElementById("todo-desc").value = "";
   }
 
   function handleCompleted(e) {
@@ -34,7 +54,7 @@ function App() {
       setTodos((prev) => {
         return prev.map((item) => {
           return item.id === todoId
-            ? { ...item, completed: !item.completed }
+            ? { ...item, completed: !item.completed } // {completed : true}
             : item;
         });
       });
@@ -44,19 +64,29 @@ function App() {
           return item.id != todoId;
         });
       });
+      setIsEditing(false);
+      document.getElementById("todo-title").value = "";
+      document.getElementById("todo-desc").value = "";
+    }
+  }
+
+  function handleEdit(e) {
+    const todoId = e.target.parentElement.parentElement.id;
+    localStorage.setItem("todoId", todoId);
+    if (!isEditing) {
+      setIsEditing(!isEditing);
+      const { title, desc } = todos.filter((item) => {
+        return item.id === todoId;
+      })[0];
+      document.getElementById("todo-title").value = title;
+      document.getElementById("todo-desc").value = desc;
     }
   }
 
   let todoList = todos.map((item) => {
     return (
       <div className="todo-entry" key={item.id} id={item.id}>
-        <div>
-          <button>Edit</button>
-          <button onClick={handleCompleted}>
-            {item.completed ? "Remove" : "Completed"}
-          </button>
-        </div>
-        <div>
+        <div className="todo-entry-info">
           {item.completed ? (
             <>
               <h1>
@@ -72,6 +102,16 @@ function App() {
               <p>{item.desc}</p>
             </>
           )}
+        </div>
+        <div className="todo-edit-completed-btn-container">
+          {!item.completed && (
+            <button className="general-button" onClick={handleEdit}>
+              Edit
+            </button>
+          )}
+          <button className="general-button" onClick={handleCompleted}>
+            {item.completed ? "Remove" : "Completed"}
+          </button>
         </div>
       </div>
     );
@@ -93,11 +133,15 @@ function App() {
           placeholder="Input description"
         />
         <div className="add-clear-todo-btn">
-          <button onClick={handleSubmit}>Add todo</button>
-          <button onClick={handleClear}>Clear List</button>
+          <button className="general-button" onClick={handleSubmit}>
+            {isEditing ? "Update" : "Add todo"}
+          </button>
+          <button className="general-button" onClick={handleClear}>
+            Clear List
+          </button>
         </div>
-        <div className="render-todo">{todoList}</div>
       </div>
+      <div className="render-todo">{todoList}</div>
     </>
   );
 }
