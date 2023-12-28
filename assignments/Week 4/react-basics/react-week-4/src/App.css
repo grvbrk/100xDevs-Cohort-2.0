@@ -25,6 +25,7 @@ input {
   border-radius: 5px;
   border: none;
 }
+
 .add-clear-todo-btn {
   display: flex;
   gap: 10px;
@@ -36,16 +37,19 @@ input {
 }
 
 .render-todo {
+  width: fit-content;
+  margin: 0 auto;
   display: flex;
   justify-content: space-evenly;
-  gap: 10px;
+  align-self: center;
+  gap: 35px;
   flex-wrap: wrap;
 }
 
 .todo-entry {
   border-radius: 10px;
-  border: 0.2px solid rgba(255, 255, 255, 0.05);
-  box-shadow: 8px 8px 10px 0px rgba(255, 255, 255, 0.12);
+  border: 0.2px solid rgba(230, 201, 163, 0.05);
+  box-shadow: 8px 8px 10px 0px rgba(230, 201, 163, 0.12);
 
   background-color: rgb(26, 25, 25);
   width: 350px;
