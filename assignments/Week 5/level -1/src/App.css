@@ -42,7 +42,8 @@ label {
 .submit-btn {
   /* border: 1px solid red; */
   display: flex;
-  align-self: flex-end;
+  width: 100%;
+  justify-content: center;
   padding: 10px 10px;
   border: 1px solid black;
   border-radius: 5px;
@@ -84,12 +85,17 @@ label {
 .form-element-interest-input {
   /* border: 1px solid red; */
   display: flex;
-  justify-content:flex-start;
+  justify-content: flex-start;
   gap: 5px;
 }
 
-.form-element-interest-input>input{
-  width: 30%
+.form-element-interest-input > input {
+  width: 30%;
 }
 
-
+.interest-chip {
+  /* border: 1px solid red; */
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+}

@@ -36,10 +36,8 @@ function App() {
 
   function handleInterestClick() {
     const newInterest = { id: uuidv4(), activity: interest.current.value };
-    console.log(newInterest);
 
     const newInterestArray = [...form.interests, newInterest];
-    console.log(newInterestArray);
     setForm((prevData) => {
       return { ...prevData, interests: newInterestArray };
     });
@@ -59,6 +57,12 @@ function App() {
   function handleSubmit(e) {
     e.preventDefault();
     console.log(form);
+    setForm({
+      name: "",
+      desc: "",
+      socials: [{ platform: "", link: "" }],
+      interests: [],
+    });
   }
 
   return (
@@ -94,20 +98,20 @@ function App() {
             <div key={index} className="form-element-social-links">
               <input
                 placeholder="Platform"
-                defaultValue={item.platform}
+                value={item.platform}
                 name="platform"
                 onChange={(e) => handleSocialChange(e, index)}
               />
               <input
                 placeholder="Link"
-                defaultValue={item.link}
+                value={item.link}
                 name="link"
                 onChange={(e) => handleSocialChange(e, index)}
               />
             </div>
           );
         })}
-        <button className="add-social-btn" onClick={addSocials}>
+        <button type="button" className="add-social-btn" onClick={addSocials}>
           Add
         </button>
       </div>
@@ -132,15 +136,19 @@ function App() {
         </div>
         {form.interests.length != 0 && (
           <Stack direction="row" spacing={1}>
-            {form.interests.map((item, index) => {
-              return (
-                <Chip
-                  key={index}
-                  label={item.activity}
-                  onDelete={() => handleDelete(item.id)}
-                />
-              );
-            })}
+            <div className="interest-chip">
+              {form.interests.map((item, index) => {
+                return (
+                  <div key={index}>
+                    <Chip
+                      size="small"
+                      label={item.activity}
+                      onDelete={() => handleDelete(item.id)}
+                    />
+                  </div>
+                );
+              })}
+            </div>
           </Stack>
         )}
       </div>
