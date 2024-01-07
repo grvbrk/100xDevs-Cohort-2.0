@@ -1,5 +1,6 @@
 **/.env
 **/node_modules/
+**/Test.jsx
 **/solutions/
 **/solution/
 **/tests/
@@ -8,3 +9,8 @@
 **/package-lock.json
 **/.eslintrc.cjs
 **/vite.config.js
+**/tsconfig.node.json
+**/tsconfig.json
+**/tailwind.config.cjs
+**/postcss.config.js
+**/vite-env.d.ts
