@@ -1,8 +1,9 @@
 import "./App.css";
-import { createRef, useRef, useState } from "react";
-import { Chip, Stack } from "@mui/material";
+import { useEffect, useRef, useState } from "react";
+import { Chip, Stack, Card, CardContent } from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
 import { v4 as uuidv4 } from "uuid";
-import Card from "./components/Card";
+import RenderCard from "./components/RenderCard";
 
 function App() {
   const interest = useRef(null);
@@ -13,7 +14,21 @@ function App() {
     interests: [],
   });
   const [formSubmitted, setFormSubmitted] = useState(false);
+  const [cards, setCards] = useState([]);
+  const [cardsLoading, setCardsLoading] = useState(true);
 
+  useEffect(() => {
+    async function fetchCards() {
+      const res = await fetch("http://localhost:3001/card");
+      const allCards = await res.json();
+      setCards(allCards.cards);
+      setCardsLoading(false);
+    }
+
+    fetchCards();
+  }, [formSubmitted]);
+
+  console.log("Leak");
   function handleChange(e) {
     setForm((prevData) => {
       return { ...prevData, [e.target.name]: e.target.value };
@@ -56,111 +71,140 @@ function App() {
     });
   }
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
     setFormSubmitted(true);
-    // setForm({
-    //   name: "",
-    //   desc: "",
-    //   socials: [{ platform: "", link: "" }],
-    //   interests: [],
-    // });
+    console.log(form);
+
+    try {
+      await fetch("http://localhost:3001/card", {
+        method: "POST",
+        body: JSON.stringify(form),
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      });
+    } catch (error) {
+      console.log(error);
+    }
+
+    setForm({
+      name: "",
+      desc: "",
+      socials: [{ platform: "", link: "" }],
+      interests: [],
+    });
   }
 
   return (
     <div className="main-container">
-      <form className="form" onSubmit={handleSubmit}>
-        <div className="form-element-text">
-          <label htmlFor="name">Name</label>
-          <input
-            type="text"
-            id="name"
-            value={form.name}
-            name="name"
-            placeholder="Enter your name"
-            onChange={handleChange}
-          />
-        </div>
+      <Card sx={{ width: 600, bgcolor: "antiquewhite" }} raised={true}>
+        <CardContent>
+          <form className="form" onSubmit={handleSubmit}>
+            <div className="form-element-text">
+              <label htmlFor="name">Name</label>
+              <input
+                type="text"
+                id="name"
+                value={form.name}
+                name="name"
+                placeholder="Enter your name"
+                onChange={handleChange}
+              />
+            </div>
 
-        <div className="form-element-text">
-          <label htmlFor="desc">Description</label>
-          <textarea
-            type="text"
-            id="desc"
-            value={form.desc}
-            name="desc"
-            placeholder="Describe yourself"
-            onChange={handleChange}
-          />
-        </div>
+            <div className="form-element-text">
+              <label htmlFor="desc">Description</label>
+              <textarea
+                type="text"
+                id="desc"
+                value={form.desc}
+                name="desc"
+                placeholder="Describe yourself"
+                onChange={handleChange}
+              />
+            </div>
 
-        <div className="form-element-social">
-          <label>Socials</label>
-          {form.socials.map((item, index) => {
-            return (
-              <div key={index} className="form-element-social-links">
+            <div className="form-element-social">
+              <label>Socials</label>
+              {form.socials.map((item, index) => {
+                return (
+                  <div key={index} className="form-element-social-links">
+                    <input
+                      placeholder="Platform"
+                      value={item.platform}
+                      name="platform"
+                      onChange={(e) => handleSocialChange(e, index)}
+                    />
+                    <input
+                      placeholder="Link"
+                      value={item.link}
+                      name="link"
+                      onChange={(e) => handleSocialChange(e, index)}
+                    />
+                  </div>
+                );
+              })}
+              <button
+                type="button"
+                className="add-social-btn"
+                onClick={addSocials}
+              >
+                <AddIcon sx={{ maxWidth: 15 }} />
+              </button>
+            </div>
+
+            <div className="form-element-interest">
+              <label htmlFor="interests">Interests</label>
+              <div className="form-element-interest-input">
                 <input
-                  placeholder="Platform"
-                  value={item.platform}
-                  name="platform"
-                  onChange={(e) => handleSocialChange(e, index)}
+                  type="text"
+                  id="interests"
+                  name="interests"
+                  placeholder="Interests"
+                  ref={interest}
                 />
-                <input
-                  placeholder="Link"
-                  value={item.link}
-                  name="link"
-                  onChange={(e) => handleSocialChange(e, index)}
-                />
+                <button
+                  type="button"
+                  className="add-interest-btn"
+                  onClick={handleInterestClick}
+                >
+                  <AddIcon sx={{ maxWidth: 15 }} />
+                </button>
               </div>
-            );
-          })}
-          <button type="button" className="add-social-btn" onClick={addSocials}>
-            Add
-          </button>
-        </div>
+              {form.interests.length != 0 && (
+                <Stack direction="row" spacing={1}>
+                  <div className="interest-chip">
+                    {form.interests.map((item, index) => {
+                      return (
+                        <div key={index}>
+                          <Chip
+                            size="small"
+                            label={item.activity}
+                            onDelete={() => handleDelete(item.id)}
+                          />
+                        </div>
+                      );
+                    })}
+                  </div>
+                </Stack>
+              )}
+            </div>
 
-        <div className="form-element-interest">
-          <label htmlFor="interests">Interests</label>
-          <div className="form-element-interest-input">
-            <input
-              type="text"
-              id="interests"
-              name="interests"
-              placeholder="Interests"
-              ref={interest}
-            />
-            <button
-              type="button"
-              className="add-interest-btn"
-              onClick={handleInterestClick}
-            >
-              Add
+            <button type="submit" className="submit-btn">
+              Submit
             </button>
-          </div>
-          {form.interests.length != 0 && (
-            <Stack direction="row" spacing={1}>
-              <div className="interest-chip">
-                {form.interests.map((item, index) => {
-                  return (
-                    <div key={index}>
-                      <Chip
-                        size="small"
-                        label={item.activity}
-                        onDelete={() => handleDelete(item.id)}
-                      />
-                    </div>
-                  );
-                })}
-              </div>
-            </Stack>
-          )}
+          </form>
+        </CardContent>
+      </Card>
+      {!cardsLoading && (
+        <div className="render-cards">
+          {cards.map((card) => {
+            return <RenderCard key={card._id} prop={card} />;
+          })}
         </div>
-
-        <button type="submit" className="submit-btn">
-          Submit
-        </button>
-      </form>
-      {formSubmitted && <Card form={form} />}
+      )}
     </div>
   );
 }
