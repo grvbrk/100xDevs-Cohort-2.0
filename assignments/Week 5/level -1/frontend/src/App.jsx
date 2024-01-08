@@ -16,14 +16,19 @@ function App() {
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [cards, setCards] = useState([]);
   const [cardsLoading, setCardsLoading] = useState(true);
-  console.log(formSubmitted);
+  const [isCardBeingEdited, setIsCardBeingEdited] = useState(false);
+  const [errorState, setErrorState] = useState({
+    status: false,
+  });
+
+  console.log("formSubmitted", formSubmitted);
+
   useEffect(() => {
     async function fetchCards() {
       const res = await fetch("http://localhost:3001/card");
       const allCards = await res.json();
       setCards(allCards.cards);
       setCardsLoading(false);
-      // console.log("ran")
     }
 
     fetchCards();
@@ -72,36 +77,86 @@ function App() {
     });
   }
 
-  async function handleSubmit(e) {
-    e.preventDefault();
-    setFormSubmitted(!formSubmitted);
-    // console.log(form);
-
-    try {
-      await fetch("http://localhost:3001/card", {
-        method: "POST",
-        body: JSON.stringify(form),
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-      });
-    } catch (error) {
-      console.log(error);
+  function validateFormValues(form) {
+    const errorObject = { status: false };
+    if (form.name.length === 0) {
+      errorObject.nameError = "Required";
+      errorObject.status = true;
+    }
+    if (form.name.length > 20) {
+      errorObject.nameError = "Name must be within 20 characters";
+      errorObject.status = true;
+    }
+    if (form.desc.length > 300) {
+      errorObject.descError = "Description must be within 300 characters";
+      errorObject.status = true;
     }
 
-    setForm({
-      name: "",
-      desc: "",
-      socials: [{ platform: "", link: "" }],
-      interests: [],
-    });
+    if (form.desc.length < 50) {
+      errorObject.descError = "Description too short (Min 50 characters)";
+      errorObject.status = true;
+    }
+
+    if (form.desc.length === 0) {
+      errorObject.descError = "Required";
+      errorObject.status = true;
+    }
+    setErrorState(errorObject);
+    console.log("errorState", errorObject);
+    if (errorObject.status) return false;
+    return true;
+  }
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    const validation = validateFormValues(form);
+    if (validation) {
+      if (!isCardBeingEdited) {
+        try {
+          await fetch("http://localhost:3001/card", {
+            method: "POST",
+            body: JSON.stringify(form),
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+          });
+        } catch (error) {
+          console.log(error);
+        }
+      } else {
+        try {
+          await fetch(
+            `http://localhost:3001/card/${localStorage.getItem("cardId")}`,
+            {
+              method: "PATCH",
+              body: JSON.stringify(form),
+              headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+              },
+            }
+          );
+        } catch (error) {
+          console.log(error);
+        }
+      }
+
+      setFormSubmitted(!formSubmitted);
+      setForm({
+        name: "",
+        desc: "",
+        socials: [{ platform: "", link: "" }],
+        interests: [],
+      });
+    }
   }
 
   async function handleCardDelete(id) {
     try {
       await fetch(`http://localhost:3001/card/${id}`, {
         method: "DELETE",
+        body: JSON.stringify(form),
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
@@ -113,11 +168,15 @@ function App() {
     }
   }
 
-  async function handleCardEdit(id) {}
+  async function handleCardEdit(card) {
+    setIsCardBeingEdited(true);
+    setForm(card);
+    localStorage.setItem("cardId", card._id);
+  }
 
   return (
     <div className="main-container">
-      <Card sx={{ width: 600, bgcolor: "antiquewhite" }} raised={true}>
+      <Card sx={{ width: 400, bgcolor: "antiquewhite" }} raised={true}>
         <CardContent>
           <form className="form" onSubmit={handleSubmit}>
             <div className="form-element-text">
@@ -130,6 +189,9 @@ function App() {
                 placeholder="Enter your name"
                 onChange={handleChange}
               />
+              {errorState.status && (
+                <p className="error-text">{errorState.nameError}</p>
+              )}
             </div>
 
             <div className="form-element-text">
@@ -142,6 +204,9 @@ function App() {
                 placeholder="Describe yourself"
                 onChange={handleChange}
               />
+              {errorState.status && (
+                <p className="error-text">{errorState.descError}</p>
+              )}
             </div>
 
             <div className="form-element-social">
@@ -209,6 +274,9 @@ function App() {
             <button type="submit" className="submit-btn">
               Submit
             </button>
+            <button type="submit" className="clear-form-btn">
+              Clear Form
+            </button>
           </form>
         </CardContent>
       </Card>
@@ -221,7 +289,7 @@ function App() {
                 handleCardEdit={handleCardEdit}
                 handleCardDelete={handleCardDelete}
                 key={card._id}
-                prop={card}
+                card={card}
               />
             );
           })}

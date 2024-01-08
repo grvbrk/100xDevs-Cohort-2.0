@@ -60,6 +60,15 @@ label {
   cursor: pointer;
 }
 
+.clear-form-btn {
+  border: none;
+  background: transparent;
+  /* font-size: 10px; */
+  font-style: italic;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
 .form-element-social-links {
   /* border: 1px solid red; */
   display: flex;
@@ -136,11 +145,10 @@ label {
   flex-wrap: wrap;
 }
 
-
-.cardContent-container{
+.cardContent-container {
   position: relative;
 }
-.card-read-delete-container{
+.card-read-delete-container {
   display: flex;
   gap: 20px;
   position: absolute;
@@ -148,9 +156,14 @@ label {
   right: 20px;
 }
 
-.card-read-delete-container button{
+.card-read-delete-container button {
   border: none;
   background: transparent;
   font-size: 10px;
   cursor: pointer;
+}
+
+.error-text {
+  font-size: 13px;
+  color: red;
 }
