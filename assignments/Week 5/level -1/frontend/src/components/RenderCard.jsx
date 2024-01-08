@@ -7,7 +7,7 @@ import FacebookSharpIcon from "@mui/icons-material/FacebookSharp";
 // eslint-disable-next-line react/prop-types
 function RenderCard({ id, handleCardDelete, handleCardEdit, card }) {
   return (
-    <Card sx={{ maxWidth: 545, bgcolor: "rgb(255, 255, 255)" }} raised={true}>
+    <Card sx={{ maxWidth: 450, bgcolor: "rgb(255, 255, 255)" }} raised={true}>
       <CardContent className="cardContent-container">
         <Typography gutterBottom variant="h5" component="div">
           {card.name}

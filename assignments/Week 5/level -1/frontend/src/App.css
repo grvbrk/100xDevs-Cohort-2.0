@@ -9,12 +9,16 @@
 .main-container {
   background-color: bisque;
   /* border: 1px solid red; */
-  padding-top: 20px;
   display: flex;
-  align-items: flex-start;
   height: 100vh;
-  justify-content: center;
-  padding-left: 20px;
+}
+
+.form-container{
+  /* border: 1px solid red; */
+  display: flex;
+  align-self:flex-start;
+  margin: 40px 10px 0px 40px;
+
 }
 
 .form {
@@ -136,13 +140,16 @@ label {
 }
 
 .render-cards {
-  margin-left: 20px;
-
+  width: 1400px;
+  margin: 40px 0px 40px 20px;
   /* border: 1px solid red; */
   display: flex;
   gap: 20px;
-  align-items: center;
+  align-items: flex-start;
+  align-content: flex-start;
+
   flex-wrap: wrap;
+
 }
 
 .cardContent-container {

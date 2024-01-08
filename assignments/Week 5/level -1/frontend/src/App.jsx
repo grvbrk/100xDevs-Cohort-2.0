@@ -21,7 +21,7 @@ function App() {
     status: false,
   });
 
-  console.log("formSubmitted", formSubmitted);
+  console.log("isCardBeingEdited", isCardBeingEdited);
 
   useEffect(() => {
     async function fetchCards() {
@@ -137,18 +137,14 @@ function App() {
               },
             }
           );
+          setIsCardBeingEdited(false);
         } catch (error) {
           console.log(error);
         }
       }
 
       setFormSubmitted(!formSubmitted);
-      setForm({
-        name: "",
-        desc: "",
-        socials: [{ platform: "", link: "" }],
-        interests: [],
-      });
+      clearForm();
     }
   }
 
@@ -174,9 +170,23 @@ function App() {
     localStorage.setItem("cardId", card._id);
   }
 
+  function clearForm() {
+    setForm({
+      name: "",
+      desc: "",
+      socials: [{ platform: "", link: "" }],
+      interests: [],
+    });
+    setErrorState({ status: false });
+  }
+
   return (
     <div className="main-container">
-      <Card sx={{ width: 400, bgcolor: "antiquewhite" }} raised={true}>
+      <Card
+        sx={{ width: 400, bgcolor: "antiquewhite" }}
+        raised={true}
+        className="form-container"
+      >
         <CardContent>
           <form className="form" onSubmit={handleSubmit}>
             <div className="form-element-text">
@@ -274,7 +284,11 @@ function App() {
             <button type="submit" className="submit-btn">
               Submit
             </button>
-            <button type="submit" className="clear-form-btn">
+            <button
+              type="button"
+              className="clear-form-btn"
+              onClick={clearForm}
+            >
               Clear Form
             </button>
           </form>
