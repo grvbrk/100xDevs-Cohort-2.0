@@ -16,19 +16,20 @@ function App() {
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [cards, setCards] = useState([]);
   const [cardsLoading, setCardsLoading] = useState(true);
-
+  console.log(formSubmitted);
   useEffect(() => {
     async function fetchCards() {
       const res = await fetch("http://localhost:3001/card");
       const allCards = await res.json();
       setCards(allCards.cards);
       setCardsLoading(false);
+      // console.log("ran")
     }
 
     fetchCards();
   }, [formSubmitted]);
 
-  console.log("Leak");
+  // console.log("Leak");
   function handleChange(e) {
     setForm((prevData) => {
       return { ...prevData, [e.target.name]: e.target.value };
@@ -73,8 +74,8 @@ function App() {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    setFormSubmitted(true);
-    console.log(form);
+    setFormSubmitted(!formSubmitted);
+    // console.log(form);
 
     try {
       await fetch("http://localhost:3001/card", {
@@ -96,6 +97,23 @@ function App() {
       interests: [],
     });
   }
+
+  async function handleCardDelete(id) {
+    try {
+      await fetch(`http://localhost:3001/card/${id}`, {
+        method: "DELETE",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      });
+      setFormSubmitted(!formSubmitted);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async function handleCardEdit(id) {}
 
   return (
     <div className="main-container">
@@ -146,11 +164,7 @@ function App() {
                   </div>
                 );
               })}
-              <button
-                type="button"
-                className="add-social-btn"
-                onClick={addSocials}
-              >
+              <button type="button" className="add-btn" onClick={addSocials}>
                 <AddIcon sx={{ maxWidth: 15 }} />
               </button>
             </div>
@@ -167,7 +181,7 @@ function App() {
                 />
                 <button
                   type="button"
-                  className="add-interest-btn"
+                  className="add-btn"
                   onClick={handleInterestClick}
                 >
                   <AddIcon sx={{ maxWidth: 15 }} />
@@ -201,7 +215,15 @@ function App() {
       {!cardsLoading && (
         <div className="render-cards">
           {cards.map((card) => {
-            return <RenderCard key={card._id} prop={card} />;
+            return (
+              <RenderCard
+                id={card._id}
+                handleCardEdit={handleCardEdit}
+                handleCardDelete={handleCardDelete}
+                key={card._id}
+                prop={card}
+              />
+            );
           })}
         </div>
       )}

@@ -74,19 +74,16 @@ label {
   width: 70%;
 }
 
-.add-social-btn,
-.add-interest-btn {
-  /* border: 1px solid red; */
+.add-btn {
   display: flex;
   align-self: center;
-
-  border: 1px solid black;
   border-radius: 5px;
   cursor: pointer;
   border: none;
   background-color: transparent;
+  padding: 2px 10px;
+  box-shadow: 1px 1px 3px hsl(0deg 0% 0% / 0.38);
 }
-
 
 .form-element-interest {
   width: 100%;
@@ -137,4 +134,23 @@ label {
   gap: 20px;
   align-items: center;
   flex-wrap: wrap;
+}
+
+
+.cardContent-container{
+  position: relative;
+}
+.card-read-delete-container{
+  display: flex;
+  gap: 20px;
+  position: absolute;
+  top: 25px;
+  right: 20px;
+}
+
+.card-read-delete-container button{
+  border: none;
+  background: transparent;
+  font-size: 10px;
+  cursor: pointer;
 }
