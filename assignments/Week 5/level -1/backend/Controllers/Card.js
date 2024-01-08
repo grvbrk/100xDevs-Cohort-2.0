@@ -11,4 +11,10 @@ async function postOneCard(req, res) {
   return res.status(200).json({ msg: "Success", todo });
 }
 
-module.exports = { getAllCards, postOneCard };
+async function deleteOneCard(req, res) {
+  const { id: cardId } = req.params;
+  const card = await cardModel.findByIdAndDelete({_id: cardId})
+  return res.json({ msg: "success", card });
+}
+
+module.exports = { getAllCards, postOneCard, deleteOneCard };
