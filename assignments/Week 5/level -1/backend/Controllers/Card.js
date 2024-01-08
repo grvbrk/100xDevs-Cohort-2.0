@@ -11,10 +11,19 @@ async function postOneCard(req, res) {
   return res.status(200).json({ msg: "Success", todo });
 }
 
-async function deleteOneCard(req, res) {
+async function patchOneCard(req, res) {
   const { id: cardId } = req.params;
-  const card = await cardModel.findByIdAndDelete({_id: cardId})
+  const updatedCard = req.body;
+  const card = await cardModel.findByIdAndUpdate({ _id: cardId }, updatedCard, {
+    new: true,
+  });
   return res.json({ msg: "success", card });
 }
 
-module.exports = { getAllCards, postOneCard, deleteOneCard };
+async function deleteOneCard(req, res) {
+  const { id: cardId } = req.params;
+  const card = await cardModel.findByIdAndDelete({ _id: cardId });
+  return res.json({ msg: "success", card });
+}
+
+module.exports = { getAllCards, postOneCard, deleteOneCard, patchOneCard };
