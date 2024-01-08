@@ -25,7 +25,7 @@ function App() {
 
   useEffect(() => {
     async function fetchCards() {
-      const res = await fetch("https://one00xdevsweek5-card-grvbrk.onrender.com/card");
+      const res = await fetch("http://localhost:3001/card");
       const allCards = await res.json();
       setCards(allCards.cards);
       setCardsLoading(false);
@@ -113,7 +113,7 @@ function App() {
     if (validation) {
       if (!isCardBeingEdited) {
         try {
-          await fetch("https://one00xdevsweek5-card-grvbrk.onrender.com/card", {
+          await fetch("http://localhost:3001/card", {
             method: "POST",
             body: JSON.stringify(form),
             headers: {
@@ -127,7 +127,7 @@ function App() {
       } else {
         try {
           await fetch(
-            `https://one00xdevsweek5-card-grvbrk.onrender.com/card/${localStorage.getItem("cardId")}`,
+            `http://localhost:3001/card/${localStorage.getItem("cardId")}`,
             {
               method: "PATCH",
               body: JSON.stringify(form),
@@ -150,7 +150,7 @@ function App() {
 
   async function handleCardDelete(id) {
     try {
-      await fetch(`https://one00xdevsweek5-card-grvbrk.onrender.com/card/${id}`, {
+      await fetch(`http://localhost:3001/card/${id}`, {
         method: "DELETE",
         body: JSON.stringify(form),
         headers: {

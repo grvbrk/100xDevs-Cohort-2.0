@@ -13,12 +13,11 @@
   height: 100vh;
 }
 
-.form-container{
+.form-container {
   /* border: 1px solid red; */
   display: flex;
-  align-self:flex-start;
+  align-self: flex-start;
   margin: 40px 10px 0px 40px;
-
 }
 
 .form {
@@ -41,11 +40,16 @@
   gap: 5px;
 }
 
-input,
+input {
+  padding: 5px 10px;
+  border-radius: 10px;
+  border: 1px solid black;
+}
 textarea {
   padding: 5px 10px;
   border-radius: 10px;
   border: 1px solid black;
+  resize: vertical;
 }
 
 label {
@@ -128,6 +132,7 @@ label {
   display: flex;
   gap: 10px;
   margin-top: 10px;
+  flex-wrap: wrap;
 }
 
 .social-card-container {
@@ -149,7 +154,6 @@ label {
   align-content: flex-start;
 
   flex-wrap: wrap;
-
 }
 
 .cardContent-container {
