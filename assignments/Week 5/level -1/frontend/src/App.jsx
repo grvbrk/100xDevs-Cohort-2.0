@@ -22,10 +22,13 @@ function App() {
   });
 
   console.log("isCardBeingEdited", isCardBeingEdited);
+  console.log(form.interests);
 
   useEffect(() => {
     async function fetchCards() {
-      const res = await fetch("http://localhost:3001/card");
+      const res = await fetch(
+        "https://one00xdevsweek5-card-grvbrk.onrender.com/card"
+      );
       const allCards = await res.json();
       setCards(allCards.cards);
       setCardsLoading(false);
@@ -58,14 +61,32 @@ function App() {
   }
 
   function handleInterestClick() {
-    const newInterest = { id: uuidv4(), activity: interest.current.value };
+    if (interest.current.value === "") {
+      setErrorState((prevState) => {
+        return {
+          ...prevState,
+          interestError: "Cannot be blank",
+          interestStatus: true,
+        };
+      });
+    } else {
+      const newInterest = { id: uuidv4(), activity: interest.current.value };
 
-    const newInterestArray = [...form.interests, newInterest];
-    setForm((prevData) => {
-      return { ...prevData, interests: newInterestArray };
-    });
+      const newInterestArray = [...form.interests, newInterest];
+      setForm((prevData) => {
+        return { ...prevData, interests: newInterestArray };
+      });
 
-    interest.current.value = null;
+      setErrorState((prevState) => {
+        return {
+          ...prevState,
+          interestError: "",
+          interestStatus: false,
+        };
+      });
+      interest.current.value = null;
+
+    }
   }
 
   function handleDelete(id) {
@@ -101,8 +122,8 @@ function App() {
       errorObject.descError = "Required";
       errorObject.status = true;
     }
+
     setErrorState(errorObject);
-    console.log("errorState", errorObject);
     if (errorObject.status) return false;
     return true;
   }
@@ -113,7 +134,7 @@ function App() {
     if (validation) {
       if (!isCardBeingEdited) {
         try {
-          await fetch("http://localhost:3001/card", {
+          await fetch("https://one00xdevsweek5-card-grvbrk.onrender.com/card", {
             method: "POST",
             body: JSON.stringify(form),
             headers: {
@@ -127,7 +148,9 @@ function App() {
       } else {
         try {
           await fetch(
-            `http://localhost:3001/card/${localStorage.getItem("cardId")}`,
+            `https://one00xdevsweek5-card-grvbrk.onrender.com/card/${localStorage.getItem(
+              "cardId"
+            )}`,
             {
               method: "PATCH",
               body: JSON.stringify(form),
@@ -150,14 +173,17 @@ function App() {
 
   async function handleCardDelete(id) {
     try {
-      await fetch(`http://localhost:3001/card/${id}`, {
-        method: "DELETE",
-        body: JSON.stringify(form),
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-      });
+      await fetch(
+        `https://one00xdevsweek5-card-grvbrk.onrender.com/card/${id}`,
+        {
+          method: "DELETE",
+          body: JSON.stringify(form),
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        }
+      );
       setFormSubmitted(!formSubmitted);
     } catch (error) {
       console.log(error);
@@ -179,6 +205,8 @@ function App() {
     });
     setErrorState({ status: false });
   }
+
+  console.log(errorState);
 
   return (
     <div className="main-container">
@@ -262,7 +290,7 @@ function App() {
                   <AddIcon sx={{ maxWidth: 15 }} />
                 </button>
               </div>
-              {form.interests.length != 0 && (
+              {!errorState.interestStatus  ? (
                 <Stack direction="row" spacing={1}>
                   <div className="interest-chip">
                     {form.interests.map((item, index) => {
@@ -278,6 +306,8 @@ function App() {
                     })}
                   </div>
                 </Stack>
+              ) : (
+                <p className="error-text">{errorState.interestError}</p>
               )}
             </div>
 
