@@ -12,8 +12,23 @@ const Assignment3 = () => {
     ]);
 
     // Your code starts here
-    const totalValue = 0;
+    const totalValue = React.useMemo(()=>{
+        let total = 0
+        console.log("Ran")
+        for(let {name, value} of items){
+            total+=value
+        }
+        return total
+    }, [items]);
     // Your code ends here
+
+    function handleClick(){
+        const item = {name: "Random Name", value:10}
+        setItems((prevItems)=>{
+            return [...prevItems, item]
+        })
+    }
+
     return (
         <div>
             <ul>
@@ -21,6 +36,7 @@ const Assignment3 = () => {
                     <li key={index}>{item.name} - Price: ${item.value}</li>
                 ))}
             </ul>
+            <button onClick={handleClick}>Add more items</button>
             <p>Total Value: {totalValue}</p>
         </div>
     );
